@@ -17,8 +17,6 @@ const handleScaleWindown = () => {
     }
 }
 
-console.log(handleScaleWindown())
-
 var config = {
     type: Phaser.AUTO,
     parent: 'wapper',

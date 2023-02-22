@@ -1,5 +1,7 @@
 import Footer from "../components/Footer.js";
+import LoadingBar from "../components/LoadingBar.js";
 import SoundControl from "../components/SoundControl.js";
+import LoadImage from "../data/loadImage.js";
 
 class StartScene extends Phaser.Scene {
     constructor ()
@@ -19,106 +21,19 @@ class StartScene extends Phaser.Scene {
         imageBG.setScale(scale).setScrollFactor(0)
         
         // LOADING BAR
-        var progressBar = this.add.graphics();
-        progressBar.setDepth(3)
-        progressBar.fillStyle(0xffffff, 1);
-
-        var progressBox = this.add.graphics();
-        progressBox.setDepth(2)
-        progressBox.fillStyle(0xE1854, 1);
-        progressBox.fillRect(gameWidth/2 - 110, gameHeight/1.3, 220, 18);
-
-        // loading update
-        this.load.setPath('/src');
-        this.load.on('progress', function (value) {
-            progressBar.fillStyle(0xffffff, 1);
-            progressBar.fillRect(gameWidth/2 - 108, gameHeight/1.3 + 2, 216 * value, 14);
-
-        });
-
-        this.load.on('complete', function () {
-            progressBar.destroy();
-            progressBox.destroy();
-        });
+        LoadingBar(this)
         
-        // START SCENE
-        this.load.image('backgroundStart', 'assets/images/backgrounds/bg_1.jpg');
-
-        // Logo
-        this.load.image('logoTop', 'assets/images/text/logo_encanto.png');
-
-        // buttons
-        this.load.image('btnStart', 'assets/images/buttons/btn_start.png');
-
-        // texts
-        this.load.image('txtIntro', 'assets/images/text/txt_intro.png');
-
-        // GAME SCENE
-        this.load.image('character1', 'assets/images/character/on-platform/1.png');
-        this.load.image('character2', 'assets/images/character/on-platform/2.png');
-        this.load.image('character3', 'assets/images/character/on-platform/3.png');
-        this.load.image('character4', 'assets/images/character/on-platform/4.png');
-        this.load.image('character5', 'assets/images/character/on-platform/5.png');
-        this.load.image('character6', 'assets/images/character/on-platform/6.png');
-        this.load.image('character7', 'assets/images/character/on-platform/7.png');
-        this.load.image('character8', 'assets/images/character/on-platform/8.png');
-        this.load.image('character9', 'assets/images/character/on-platform/9.png');
-
-        this.load.image('character1New', 'assets/images/character/game/1.png');
-        this.load.image('character2New', 'assets/images/character/game/2.png');
-        this.load.image('character3New', 'assets/images/character/game/3.png');
-        this.load.image('character4New', 'assets/images/character/game/4.png');
-        this.load.image('character5New', 'assets/images/character/game/5.png');
-        this.load.image('character6New', 'assets/images/character/game/6.png');
-        this.load.image('character7New', 'assets/images/character/game/7.png');
-        this.load.image('character8New', 'assets/images/character/game/8.png');
-        this.load.image('character9New', 'assets/images/character/game/9.png');
-
-        this.load.image('background', 'assets/images/backgrounds/bg_2.jpg');
-        
-        this.load.image('backgroundCharac', 'assets/images/text/game_platform.png');
-        this.load.image('logoTop', 'assets/images/text/logo_encanto.png');
-        this.load.image('timeBG', 'assets/images/text/time.png');
-
-        this.load.image('closePopup', 'assets/images/popup/close.png');
-        this.load.image('popup1', 'assets/images/popup/popup_1.png');
-        this.load.image('popup2', 'assets/images/popup/popup_2.png');
-        this.load.image('popup3', 'assets/images/popup/popup_3.png');
-        this.load.image('popup4', 'assets/images/popup/popup_4.png');
-        this.load.image('popup5', 'assets/images/popup/popup_5.png');
-        this.load.image('popup6', 'assets/images/popup/popup_6.png');
-        this.load.image('popup7', 'assets/images/popup/popup_7.png');
-        this.load.image('popup8', 'assets/images/popup/popup_8.png');
-        this.load.image('popup9', 'assets/images/popup/popup_9.png');
-
-        // FINAL SCENE
-        this.load.image('backgroundFinal', 'assets/images/backgrounds/bg_3.jpg');
-
-        // buttons
-        this.load.image('btnLearnMore', 'assets/images/buttons/btn_learnmore.png');
-        this.load.image('btnRePlay', 'assets/images/buttons/btn_replay.png');
-
-        this.load.image('soundIcon', 'assets/images/icons/sound_on.png');
-        this.load.image('soundIconMuted', 'assets/images/icons/sound_off.png');
-
-        // texts
-        this.load.image('txtEnd', 'assets/images/text/txt_endscreen_lose.png');
-        this.load.image('txtCongratz', 'assets/images/text/txt_endscreen_win.png');
-        this.load.image('txtOnly', 'assets/images/text/txt_prelaunch.png');
-        this.load.image('txtTimeOver', 'assets/images/text/txt_timesup.png');
-        this.load.image('txtTurtorial', 'assets/images/text/txt_tutorial.png');
-
-        // video frame
-        this.load.image('videoFrame', 'assets/images/icons/videoframe.png');
-
-        // Footer
-        this.load.image('footerLogo', 'assets/images/logo/logo_pg.png');
-        this.load.image('footerText', 'assets/images/text/legal.png');
+        // LOAD
+        LoadImage(this);
     }
 
     create (data){
         const gameHeight = this.game.config.height
         const gameWidth = this.game.config.width
+
+        this.SOUND_STATE = true
+
+        var music = this.sound.add('sound',{ loop: false });
 
         // Render Logo
         const logoTop = this.add.image(gameWidth/2, 100, 'logoTop').setInteractive();
@@ -146,7 +61,6 @@ class StartScene extends Phaser.Scene {
             }
         );
 
-
         // Render Button Start (354 × 117)
         const btnStart = this.add.image(gameWidth/2, 100, 'btnStart').setInteractive();
         btnStart.setDisplaySize(gameWidth*(2/5.5), gameWidth*(2/5.5)*(117/354))
@@ -171,6 +85,7 @@ class StartScene extends Phaser.Scene {
 
         // ------ event
         btnStart.on('pointerdown', function(){
+            music.play()
             this.scene.start("GameScene");
         }, this)
     }

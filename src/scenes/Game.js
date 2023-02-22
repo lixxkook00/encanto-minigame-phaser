@@ -1,5 +1,7 @@
 import Footer from "../components/Footer.js";
 import SoundControl from "../components/SoundControl.js";
+import handleDragDrop from "../utils/handleDragDrop.js";
+import handleEndGame from "../utils/handleEndGame.js";
 
 class GameScene extends Phaser.Scene {
 
@@ -9,25 +11,19 @@ class GameScene extends Phaser.Scene {
     }
 
     create ()
-    {
-        this.initialTime = 30;
-
-        var tween = null;
-        
-        const NUMBER_CHARACTER = 9;
-        let TARGET_ARRAY = []
-        let CHARAC_ARRAY = []
-        let TOTAL_SCORE = 0
-
-        var textTimer;
-        var timedEvent;
-
-        var spriteTimeBG;
-
+    {   
         const gameHeight = this.game.config.height
         const gameWidth = this.game.config.width
 
-        var x = gameWidth/15;
+        this.GAME_TIME_DURATION = 30;
+        
+        const NUMBER_CHARACTER = 9;
+        this.TOTAL_SCORE = 0
+        
+        var tween;
+        
+        let TARGET_ARRAY = []
+        let CHARAC_ARRAY = []
 
         const TARGET_ARRAY_INFOR = [
             {
@@ -68,64 +64,6 @@ class GameScene extends Phaser.Scene {
             },
         ]
 
-        const handleEndGame = (key,currentScene) => {
-            // Render background overlay
-            const bgTimeOver = this.add.graphics();
-            bgTimeOver.setDepth(1)
-            bgTimeOver.fillStyle(0x000000, 0.6);
-            bgTimeOver.fillRect(0, 0, gameWidth, gameHeight);
-            bgTimeOver.setAlpha(0)
-
-            tween = currentScene.tweens.add({
-                targets: bgTimeOver,
-                alpha: {
-                    from: 0,
-                    to: 1,
-                },
-                duration: 500,
-                ease: 'Linear'
-            });
-            
-            if(key === 'timeover'){
-                // Render text time over (357 × 101)
-                const txtTimeOver = this.add.image(gameWidth/2, 100, 'txtTimeOver').setInteractive();
-                txtTimeOver.setSize(10*(357/101),10)
-                txtTimeOver.setPosition(gameWidth/2, gameHeight/2);
-                txtTimeOver.setDepth(2)
-                txtTimeOver.setScale(0)
-
-                tween = currentScene.tweens.add({
-                    targets: txtTimeOver,
-                    scale: {
-                        from: 0,
-                        to: 1,
-                    },
-                    duration: 500,
-                    ease: 'Linear'
-                });
-            }else if(key === 'congraz'){
-                // Render text time over (357 × 101)
-                const txtTimeOver = this.add.image(gameWidth/2, 100, 'txtCongratz').setInteractive();
-                txtTimeOver.setSize(10*(357/101),10)
-                txtTimeOver.setPosition(gameWidth/2, gameHeight/2);
-                txtTimeOver.setDepth(2)
-
-                tween = currentScene.tweens.add({
-                    targets: txtTimeOver,
-                    scale: {
-                        from: 0,
-                        to: 1,
-                    },
-                    duration: 500,
-                    ease: 'Linear'
-                });
-            }
-
-            setTimeout(() => {
-                currentScene.scene.start("FinalScene",{ score: TOTAL_SCORE })
-            },1000)
-        }
-
         // Render Background
         let imageBG = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'background')
         let scaleX = this.cameras.main.width / imageBG.width
@@ -134,25 +72,25 @@ class GameScene extends Phaser.Scene {
         imageBG.setScale(scale).setScrollFactor(0)
 
         // Render Time BG (244 × 84)
-        spriteTimeBG = this.add.image(160, 160, 'timeBG');
+        const spriteTimeBG = this.add.image(160, 160, 'timeBG');
         spriteTimeBG.setPosition(gameWidth - (spriteTimeBG.width*0.8/2 + gameWidth/20) - gameWidth/16, gameHeight/10);
 
         // Render Timecountdown
         var style = { font: "bold 18px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-        textTimer = this.add.text(gameWidth/2, 32, this.initialTime,style);
+        const textTimer = this.add.text(gameWidth/2, 32, this.GAME_TIME_DURATION,style);
 
         // Each 1000 ms call onEvent
-        timedEvent = this.time.addEvent(
+        const timedEvent = this.time.addEvent(
             { 
                 delay: 1000, 
                 // callback: self.onEvent(textTimer,TOTAL_SCORE,this), 
                 callback: () => {
-                    if(this.initialTime > 0){
-                        this.initialTime -= 1; // One second
-                        textTimer.setText(this.initialTime);
+                    if(this.GAME_TIME_DURATION > 0){
+                        this.GAME_TIME_DURATION -= 1; // One second
+                        textTimer.setText(this.GAME_TIME_DURATION);
                     }else{
                         // this.time.paused = true
-                        handleEndGame("timeover",this)
+                        handleEndGame(this,"timeover",this)
                     }
                 },
                 callbackScope: self, 
@@ -191,23 +129,17 @@ class GameScene extends Phaser.Scene {
         }
         txtTurtorial.setPosition(gameWidth/2, txtTurtorialY+10);
         txtTurtorial.setAlpha(0)
-        this.tweens.add(
-        {
+        this.tweens.add({
             targets: txtTurtorial,
             delay: parseInt(`${i}00`),
             alpha: {
                 from: 0,
                 to: 1
             },
-            // scale: {
-            //     from: 1.5,
-            //     to: gameWidth < 600 ? 0.5 : 1,
-            // },
             y: txtTurtorialY,
             duration: 300,
             ease: 'Linear'
-        }
-    );
+        });
         
         // Render Logo
         const logoTop = this.add.image(100, 100, 'logoTop').setInteractive();
@@ -215,12 +147,14 @@ class GameScene extends Phaser.Scene {
         logoTop.setScale(0.3)
 
         // Render character
+        let x = gameWidth/15;
+
         for (var i = 1; i <= NUMBER_CHARACTER; i++)
         {   
             // CREATE CHARACTER
             const characImageName = `character${i}`
             let characImageScaleUp = 1
-            
+
             const image = this.add.image(x, 100 , characImageName).setInteractive();
             this.input.setDraggable(image);
 
@@ -272,145 +206,12 @@ class GameScene extends Phaser.Scene {
             TARGET_ARRAY.push(imageTarget)
         }
 
-        // // Render Popup
-        const showPopUp = (i,currentScene,dropZone) => {
-            const popUp = this.add.image(gameWidth/2, gameHeight/2, `popup${i}`);
-            popUp.setScale(0);
-            popUp.setPosition(dropZone.x,dropZone.y)
-            let scaleUp = 0;
-            gameWidth < 600 ? scaleUp = 0.5 : scaleUp = 0.8 
-            tween = currentScene.tweens.add({
-                targets: popUp,
-                scale: {
-                    from: 0,
-                    to: scaleUp,
-                },
-                x: gameWidth/2,
-                y: gameHeight/2,
-                duration: 500,
-                ease: 'Linear'
-            });
-
-            const closeButton = this.add.image(100, 100, 'closePopup').setInteractive();
-            let scaleCloseBtnUp = 0;
-            gameWidth < 600 ? scaleCloseBtnUp = 0.5 : scaleCloseBtnUp = 1 
-            closeButton.setScale(scaleCloseBtnUp)
-
-            var pw = gameWidth/2 + (popUp.width/2)*scaleUp - (closeButton.width/2)*scaleCloseBtnUp - (popUp.width/10)*scaleUp;
-            var ph = gameHeight/2 - (popUp.height/3)*scaleUp;
-
-            closeButton.setScale(0)
-            tween = currentScene.tweens.add({
-                targets: closeButton,
-                delay: 500,
-                scale: {
-                    from: 0,
-                    to: scaleCloseBtnUp+0.1,
-                },
-                duration: 1,
-                ease: 'Linear'
-            });
-
-            closeButton.setPosition(pw,ph)
-            closeButton.on('pointerdown', function(){
-                tween = currentScene.tweens.add({
-                    targets: popUp,
-                    scale: {
-                        from: scaleUp,
-                        to: 0,
-                    },
-                    x: dropZone.x,
-                    y: dropZone.y,
-                    duration: 500,
-                    ease: 'Linear'
-                });
-
-                if(TOTAL_SCORE===9){
-                    handleEndGame("congraz",this)
-                }
-
-                closeButton.destroy()
-            }, this)
-        }
-
-        // Sounds
-        // const SoundControl = (game) => {
-        //     // 41 × 59
-        //     const soundIcon = game.add.image(10, gameHeight/2, 'soundIcon').setInteractive();
-
-        //     if(gameWidth < 600){
-        //         soundIcon.setScale(0.7)
-        //         soundIcon.setPosition(gameWidth - 30, gameHeight/10 - 2);
-        //     }else{
-        //         soundIcon.setScale(0.9)
-        //         soundIcon.setPosition(gameWidth - (gameWidth/20), gameHeight/10 - 5);
-        //     }
-        // }
-
+        
         SoundControl(this)
         
         Footer(this)
 
-        // events drag and drop
-        this.input.on('dragstart', function (pointer, gameObject) {
-            this.children.bringToTop(gameObject);
-
-            gameObject.setTexture(gameObject.texture.key+"New")
-            if(gameWidth < 600){
-                gameObject.setScale(0.6)
-            }
-        }, this);
-
-        this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-            gameObject.x = dragX;
-            gameObject.y = dragY;
-            
-        });
-
-        this.input.on('drop', function (pointer, gameObject, dropZone) {
-
-            if(dropZone.texture.key == (gameObject.texture.key)){
-                gameObject.x = dropZone.x;
-                gameObject.y = dropZone.y;
-
-                // clear
-                dropZone.setScale(0)
-                gameObject.disableInteractive()
-                gameObject.setScale(0)
-
-                // add total score
-                TOTAL_SCORE++;
-
-                // show popup infor
-                showPopUp(parseInt((gameObject.texture.key).slice(9,-3)),this.scene,dropZone)
-                
-                return 0
-            }else{
-                gameObject.x = gameObject.input.dragStartX;
-                gameObject.y = gameObject.input.dragStartY;
-            }
-        });
-
-        this.input.on('dragend', function (pointer, gameObject, dropped) {
-
-            if (!dropped)
-            {
-                gameObject.x = gameObject.input.dragStartX;
-                gameObject.y = gameObject.input.dragStartY;
-                
-            }else{
-
-            }
-
-            const currentName = gameObject.texture.key;
-            gameObject.setTexture(currentName.slice(0,-3))
-
-            // console.log("TOTAL_SCORE",TOTAL_SCORE,"/ 9")
-        });
-
-        this.input.on('dragleave', function (pointer, gameObject, dropZone) {
-
-        });
+        handleDragDrop(this)
     }
 
     update() {
