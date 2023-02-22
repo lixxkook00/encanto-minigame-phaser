@@ -7,26 +7,8 @@ class GameScene extends Phaser.Scene {
         super('GameScene');
     }
 
-    formatTime(seconds){
-        // Minutes
-        var minutes = Math.floor(seconds/60);
-        // Seconds
-        var partInSeconds = seconds%60;
-        // Adds left zeros to seconds
-        partInSeconds = partInSeconds.toString().padStart(2,'0');
-        // Returns formated time
-        return `${minutes}:${partInSeconds}`;
-    }
-
-    preload ()
-    {
-
-    }
-
     create ()
     {
-        var frames = this.textures.get('character').getFrameNames();
-
         this.initialTime = 30;
 
         var tween = null;
@@ -44,9 +26,7 @@ class GameScene extends Phaser.Scene {
         const gameHeight = this.game.config.height
         const gameWidth = this.game.config.width
 
-
         var x = gameWidth/15;
-        var y = gameHeight-50;
 
         const TARGET_ARRAY_INFOR = [
             {
@@ -87,6 +67,64 @@ class GameScene extends Phaser.Scene {
             },
         ]
 
+        const handleEndGame = (key,currentScene) => {
+            // Render background overlay
+            const bgTimeOver = this.add.graphics();
+            bgTimeOver.setDepth(1)
+            bgTimeOver.fillStyle(0x000000, 0.6);
+            bgTimeOver.fillRect(0, 0, gameWidth, gameHeight);
+            bgTimeOver.setAlpha(0)
+
+            tween = currentScene.tweens.add({
+                targets: bgTimeOver,
+                alpha: {
+                    from: 0,
+                    to: 1,
+                },
+                duration: 500,
+                ease: 'Linear'
+            });
+            
+            if(key === 'timeover'){
+                // Render text time over (357 × 101)
+                const txtTimeOver = this.add.image(gameWidth/2, 100, 'txtTimeOver').setInteractive();
+                txtTimeOver.setSize(10*(357/101),10)
+                txtTimeOver.setPosition(gameWidth/2, gameHeight/2);
+                txtTimeOver.setDepth(2)
+                txtTimeOver.setScale(0)
+
+                tween = currentScene.tweens.add({
+                    targets: txtTimeOver,
+                    scale: {
+                        from: 0,
+                        to: 1,
+                    },
+                    duration: 500,
+                    ease: 'Linear'
+                });
+            }else if(key === 'congraz'){
+                // Render text time over (357 × 101)
+                const txtTimeOver = this.add.image(gameWidth/2, 100, 'txtCongratz').setInteractive();
+                txtTimeOver.setSize(10*(357/101),10)
+                txtTimeOver.setPosition(gameWidth/2, gameHeight/2);
+                txtTimeOver.setDepth(2)
+
+                tween = currentScene.tweens.add({
+                    targets: txtTimeOver,
+                    scale: {
+                        from: 0,
+                        to: 1,
+                    },
+                    duration: 500,
+                    ease: 'Linear'
+                });
+            }
+
+            setTimeout(() => {
+                currentScene.scene.start("FinalScene",{ score: TOTAL_SCORE })
+            },1000)
+        }
+
         // Render Background
         let imageBG = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'background')
         let scaleX = this.cameras.main.width / imageBG.width
@@ -105,7 +143,7 @@ class GameScene extends Phaser.Scene {
         // Render Timecountdown
         var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
         textTimer = this.add.text(gameWidth/2, 32, this.initialTime,style);
-        // text.anchor.set(0.5);
+
         // Each 1000 ms call onEvent
         timedEvent = this.time.addEvent(
             { 
@@ -116,8 +154,8 @@ class GameScene extends Phaser.Scene {
                         this.initialTime -= 1; // One second
                         textTimer.setText(this.initialTime);
                     }else{
-                        console.log("TOTAL_SCORE",TOTAL_SCORE,"/ 9")
-                        this.scene.start("FinalScene",{ score: TOTAL_SCORE });
+                        // this.time.paused = true
+                        handleEndGame("timeover",this)
                     }
                 },
                 callbackScope: self, 
@@ -183,9 +221,10 @@ class GameScene extends Phaser.Scene {
         }
 
         // // Render Popup
-        const showPopUp = (i,currentScene) => {
+        const showPopUp = (i,currentScene,dropZone) => {
             const popUp = this.add.image(gameWidth/2, gameHeight/2, `popup${i}`);
             popUp.setScale(0);
+            popUp.setPosition(dropZone.x,dropZone.y)
             let scaleUp = 0;
             window.innerWidth < 600 ? scaleUp = 0.5 : scaleUp = 1 
             tween = currentScene.tweens.add({
@@ -194,6 +233,8 @@ class GameScene extends Phaser.Scene {
                     from: 0,
                     to: scaleUp,
                 },
+                x: gameWidth/2,
+                y: gameHeight/2,
                 duration: 500,
                 ease: 'Linear'
             });
@@ -230,10 +271,14 @@ class GameScene extends Phaser.Scene {
                     ease: 'Linear'
                 });
 
+                if(TOTAL_SCORE===9){
+                    handleEndGame("congraz",this)
+                }
+
                 closeButton.destroy()
             }, this)
         }
-
+        
         Footer(this)
 
         // events drag and drop
@@ -263,14 +308,11 @@ class GameScene extends Phaser.Scene {
                 gameObject.disableInteractive()
                 gameObject.setScale(0)
 
+                // add total score
                 TOTAL_SCORE++;
 
-                if(TOTAL_SCORE===9){
-                    this.scene.scene.start("FinalScene",{ score: TOTAL_SCORE });
-                }
                 // show popup infor
-                console.log("SHOW POPUP")
-                showPopUp(parseInt((gameObject.texture.key).slice(9,-3)),this.scene)
+                showPopUp(parseInt((gameObject.texture.key).slice(9,-3)),this.scene,dropZone)
                 
                 console.log(Phaser.Easing);
                 return 0

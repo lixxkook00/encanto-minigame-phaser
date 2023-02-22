@@ -20,8 +20,6 @@ class FinalScene extends Phaser.Scene {
         const gameHeight = this.game.config.height
         const gameWidth = this.game.config.width
 
-        console.log("create",data)
-
         // Render Background
         let imageBG = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'backgroundFinal')
         let scaleX = this.cameras.main.width / imageBG.width
@@ -68,6 +66,7 @@ class FinalScene extends Phaser.Scene {
 
             // ------ event
             btnRePlay.on('pointerdown', function(){
+                // this.time.paused = false
                 this.scene.start("GameScene");
             }, this)
 

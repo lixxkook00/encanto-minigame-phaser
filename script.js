@@ -9,7 +9,10 @@ var config = {
     width: window.innerWidth,
     height: window.innerWidth*(1024/768),
     backgroundColor: '#000000',
-    scene: [ PreLoadingScene, StartScene, GameScene, FinalScene]
+    scene: [ PreLoadingScene, StartScene, GameScene, FinalScene],
+    render: {
+        roundPixels: true,
+    },
 };
 
 var game = new Phaser.Game(config);

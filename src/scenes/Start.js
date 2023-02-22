@@ -101,6 +101,7 @@ class StartScene extends Phaser.Scene {
         this.load.image('txtEnd', 'assets/images/text/txt_endscreen_lose.png');
         this.load.image('txtCongratz', 'assets/images/text/txt_endscreen_win.png');
         this.load.image('txtOnly', 'assets/images/text/txt_prelaunch.png');
+        this.load.image('txtTimeOver', 'assets/images/text/txt_timesup.png');
 
         // video frame
         this.load.image('videoFrame', 'assets/images/icons/videoframe.png');
@@ -130,24 +131,6 @@ class StartScene extends Phaser.Scene {
         btnStart.setDisplaySize(gameWidth*(2/5.5), gameWidth*(2/5.5)*(117/354))
         const btnStartY = gameHeight - gameWidth*(2/6)*(117/354)*(1/2) - 25
         btnStart.setPosition(gameWidth/2, btnStartY);
-
-        // // Render Logo Footer
-        // const footerLogo = this.add.image(10, gameHeight/2, 'footerLogo').setInteractive();
-        // if(window.innerWidth < 600){
-        //     footerLogo.setScale(0.5)
-        //     footerLogo.setPosition(20, gameHeight - 20);
-        // }else{
-        //    footerLogo.setPosition(40, gameHeight - 40);
-        // }
-
-        // // Render Text Footer
-        // const footerText = this.add.image(10, gameHeight/2, 'footerText').setInteractive();
-        // if(window.innerWidth < 600){
-        //     footerText.setScale(0.5)
-        //     footerText.setPosition(gameWidth - 20 - (footerText.width)*(1/2)*0.5, gameHeight - 20);
-        // }else{
-        //    footerText.setPosition(gameWidth - 40 - (footerText.width)*(1/2)*0.5, gameHeight - 40);
-        // }
 
         Footer(this)
 
