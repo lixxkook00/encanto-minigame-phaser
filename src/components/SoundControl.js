@@ -13,6 +13,10 @@ export default function SoundControl(game) {
     }
 
     soundIcon.on('pointerdown', function(){
-        console.log("on - off")
+        if(soundIcon.texture.key === "soundIcon"){
+            soundIcon.setTexture('soundIconMuted')
+        }else if(soundIcon.texture.key === "soundIconMuted") {
+            soundIcon.setTexture('soundIcon')
+        }
     })
 }
