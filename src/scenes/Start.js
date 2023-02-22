@@ -102,6 +102,7 @@ class StartScene extends Phaser.Scene {
         this.load.image('txtCongratz', 'assets/images/text/txt_endscreen_win.png');
         this.load.image('txtOnly', 'assets/images/text/txt_prelaunch.png');
         this.load.image('txtTimeOver', 'assets/images/text/txt_timesup.png');
+        this.load.image('txtTurtorial', 'assets/images/text/txt_tutorial.png');
 
         // video frame
         this.load.image('videoFrame', 'assets/images/icons/videoframe.png');

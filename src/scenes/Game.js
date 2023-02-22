@@ -171,10 +171,22 @@ class GameScene extends Phaser.Scene {
         backgroundCharac.setSize(gameWidth + 60,(gameWidth + 60)*(186/768))
 
         if(window.innerWidth < 600){
-            backgroundCharac.setPosition((gameWidth/2), gameHeight - (gameWidth + 60)*(186/768)*(1/4));
+            backgroundCharac.setPosition((gameWidth/2), gameHeight + 10 - (gameWidth + 60)*(186/768)*(1/4));
         }else{
             backgroundCharac.setPosition((gameWidth/2), gameHeight - (gameWidth - 60)*(186/768)*(1/2));
         }
+
+        // Render Text Turtorial (621 × 33)
+            const txtTurtorial = this.add.image(gameWidth/2, 100, 'txtTurtorial').setInteractive();
+            txtTurtorial.setDisplaySize(gameWidth*0.9,gameWidth*0.9*(33/621))
+            let txtTurtorialY;
+            if(window.innerWidth < 600){
+                txtTurtorialY = backgroundCharac.y - backgroundCharac.height/1.5 - 8
+            }else{
+                txtTurtorialY = backgroundCharac.y - backgroundCharac.height/2
+            }
+            txtTurtorial.setPosition(gameWidth/2, txtTurtorialY);
+            
         
         // Render Logo
         const logoTop = this.add.image(100, 100, 'logoTop').setInteractive();
@@ -267,6 +279,8 @@ class GameScene extends Phaser.Scene {
                         from: scaleUp,
                         to: 0,
                     },
+                    x: dropZone.x,
+                    y: dropZone.y,
                     duration: 500,
                     ease: 'Linear'
                 });
@@ -314,7 +328,6 @@ class GameScene extends Phaser.Scene {
                 // show popup infor
                 showPopUp(parseInt((gameObject.texture.key).slice(9,-3)),this.scene,dropZone)
                 
-                console.log(Phaser.Easing);
                 return 0
             }else{
                 gameObject.x = gameObject.input.dragStartX;
