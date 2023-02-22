@@ -124,7 +124,7 @@ class StartScene extends Phaser.Scene {
         // Render Text Intro
         const txtIntro = this.add.image(gameWidth/2, gameHeight/2, 'txtIntro').setInteractive();
         txtIntro.setPosition(gameWidth/2, gameHeight/1.3 + 10);
-        window.innerWidth < 600 ? txtIntro.setScale(0.5) : txtIntro.setScale(1)
+        gameWidth < 600 ? txtIntro.setScale(0.5) : txtIntro.setScale(1)
 
 
         // Render Button Start (354 × 117)

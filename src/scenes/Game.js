@@ -136,7 +136,7 @@ class GameScene extends Phaser.Scene {
         spriteTimeBG = this.add.image(200, 200, 'timeBG');
         spriteTimeBG.setPosition(gameWidth - (spriteTimeBG.width*0.8/2 + gameWidth/20), gameHeight/10);
 
-        if(window.innerWidth < 600){
+        if(gameWidth < 600){
             spriteTimeBG.setScale(0.8)
         }
 
@@ -170,7 +170,7 @@ class GameScene extends Phaser.Scene {
         const backgroundCharac = this.add.image(0, gameHeight-15, 'backgroundCharac').setInteractive();
         backgroundCharac.setSize(gameWidth + 60,(gameWidth + 60)*(186/768))
 
-        if(window.innerWidth < 600){
+        if(gameWidth < 600){
             backgroundCharac.setPosition((gameWidth/2), gameHeight + 10 - (gameWidth + 60)*(186/768)*(1/4));
         }else{
             backgroundCharac.setPosition((gameWidth/2), gameHeight - (gameWidth - 60)*(186/768)*(1/2));
@@ -180,7 +180,7 @@ class GameScene extends Phaser.Scene {
             const txtTurtorial = this.add.image(gameWidth/2, 100, 'txtTurtorial').setInteractive();
             txtTurtorial.setDisplaySize(gameWidth*0.9,gameWidth*0.9*(33/621))
             let txtTurtorialY;
-            if(window.innerWidth < 600){
+            if(gameWidth < 600){
                 txtTurtorialY = backgroundCharac.y - backgroundCharac.height/1.5 - 8
             }else{
                 txtTurtorialY = backgroundCharac.y - backgroundCharac.height/2
@@ -206,10 +206,10 @@ class GameScene extends Phaser.Scene {
             CHARAC_ARRAY.push(image)
 
             image.setSize(gameWidth/25, gameHeight/25);
-            window.innerWidth < 600 ? characImageScaleUp = 0.5 : characImageScaleUp = 1
+            gameWidth < 600 ? characImageScaleUp = 0.5 : characImageScaleUp = 1
 
             image.setScale(characImageScaleUp)
-            const characterY = window.innerWidth < 600 ? backgroundCharac.y - 10 - ((image.height/2)*characImageScaleUp) - 20 : backgroundCharac.y - 10
+            const characterY = gameWidth < 600 ? backgroundCharac.y - 10 - ((image.height/2)*characImageScaleUp) - 20 : backgroundCharac.y - 10
             image.setPosition(x,characterY)
 
             x += this.game.config.width/9.5;
@@ -223,7 +223,7 @@ class GameScene extends Phaser.Scene {
             imageTarget.tint = 0x000000;
             imageTarget.input.dropZone = true;
             imageTarget.setSize(gameWidth/25, gameHeight/25);
-            if(window.innerWidth < 600){
+            if(gameWidth < 600){
                 imageTarget.setScale(0.55);
             }else{
                 imageTarget.setScale(1.05)
@@ -238,7 +238,7 @@ class GameScene extends Phaser.Scene {
             popUp.setScale(0);
             popUp.setPosition(dropZone.x,dropZone.y)
             let scaleUp = 0;
-            window.innerWidth < 600 ? scaleUp = 0.5 : scaleUp = 1 
+            gameWidth < 600 ? scaleUp = 0.5 : scaleUp = 0.8 
             tween = currentScene.tweens.add({
                 targets: popUp,
                 scale: {
@@ -253,7 +253,7 @@ class GameScene extends Phaser.Scene {
 
             const closeButton = this.add.image(100, 100, 'closePopup').setInteractive();
             let scaleCloseBtnUp = 0;
-            window.innerWidth < 600 ? scaleCloseBtnUp = 0.5 : scaleCloseBtnUp = 1 
+            gameWidth < 600 ? scaleCloseBtnUp = 0.5 : scaleCloseBtnUp = 1 
             closeButton.setScale(scaleCloseBtnUp)
 
             var pw = gameWidth/2 + (popUp.width/2)*scaleUp - (closeButton.width/2)*scaleCloseBtnUp - (popUp.width/10)*scaleUp;
@@ -300,7 +300,7 @@ class GameScene extends Phaser.Scene {
             this.children.bringToTop(gameObject);
 
             gameObject.setTexture(gameObject.texture.key+"New")
-            if(window.innerWidth < 600){
+            if(gameWidth < 600){
                 gameObject.setScale(0.6)
             }
         }, this);
