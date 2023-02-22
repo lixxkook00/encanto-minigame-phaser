@@ -1,8 +1,8 @@
-class SceneA extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
 
     constructor ()
     {
-        super('SceneA');
+        super('GameScene');
     }
 
     formatTime(seconds){
@@ -150,7 +150,7 @@ class SceneA extends Phaser.Scene {
                         textTimer.setText(this.initialTime);
                     }else{
                         console.log("TOTAL_SCORE",TOTAL_SCORE,"/ 9")
-                        this.scene.start("SceneB",{ score: TOTAL_SCORE });
+                        this.scene.start("FinalScene",{ score: TOTAL_SCORE });
                     }
                 },
                 callbackScope: self, 
@@ -287,7 +287,7 @@ class SceneA extends Phaser.Scene {
                 TOTAL_SCORE++;
 
                 if(TOTAL_SCORE===9){
-                    this.scene.scene.start("SceneB",{ score: TOTAL_SCORE });
+                    this.scene.scene.start("FinalScene",{ score: TOTAL_SCORE });
                 }
                 // show popup infor
                 console.log("SHOW POPUP")
@@ -328,11 +328,11 @@ class SceneA extends Phaser.Scene {
     }
 }
 
-class SceneB extends Phaser.Scene {
+class FinalScene extends Phaser.Scene {
 
     constructor ()
     {
-        super('SceneB');
+        super('FinalScene');
     }
 
     init(data)
@@ -408,7 +408,7 @@ class SceneB extends Phaser.Scene {
 
             // ------ event
             btnRePlay.on('pointerdown', function(){
-                this.scene.start("SceneA");
+                this.scene.start("GameScene");
             }, this)
 
             // Render Button Replay (296 × 96)
@@ -445,7 +445,7 @@ class SceneB extends Phaser.Scene {
 
             // ------ event
             btnRePlay.on('pointerdown', function(){
-                this.scene.start("SceneA");
+                this.scene.start("GameScene");
             }, this)
 
             // Render Button Replay (296 × 96)
@@ -459,13 +459,113 @@ class SceneB extends Phaser.Scene {
     }
 }
 
+class StartScene extends Phaser.Scene {
+
+    constructor ()
+    {
+        super('StartScene');
+    }
+
+    preload() {
+        const gameHeight = game.config.height
+        const gameWidth = game.config.width
+
+        var progressBar = this.add.graphics();
+        var progressBox = this.add.graphics();
+
+        // progressBar.setPosition(gameWidth/2, gameHeight/2);
+        // progressBar.setDepth(2)
+
+        // progressBox.setPosition(gameWidth/2, gameHeight/2);
+        // progressBox.setDepth(2)
+
+        progressBox.setDepth(2)
+        progressBar.setDepth(2)
+
+        progressBox.fillStyle(0x222222, 0.5);
+        progressBox.fillRect(gameWidth/2 - 160, gameHeight/2, 320, 32);
+
+        // Phaser.Display.Align.In.Center(this,progressBox)
+
+        progressBar.fillStyle(0xffffff, 1);
+        // progressBar.fillRect(gameWidth/2 - 150, gameHeight/2, 300 * 1, 30);
+
+        
+
+        // loading update
+        this.load.setPath('/');
+        this.load.on('progress', function (value) {
+            console.log(value);
+            // progressBar.clear();
+            progressBar.fillStyle(0xffffff, 1);
+            progressBar.fillRect(gameWidth/2 - 150, gameHeight/2, 300 * value, 30);
+
+        });
+
+        this.load.on('complete', function () {
+            // console.log("loaded")
+            
+            // progress.destroy();
+
+        });
+        
+        this.load.image('backgroundFinal', 'assets/images/backgrounds/bg_1.jpg');
+
+        // Logo
+        this.load.image('logoTop', 'assets/images/text/logo_encanto.png');
+
+        // buttons
+        this.load.image('btnStart', 'assets/images/buttons/btn_start.png');
+
+        // texts
+        this.load.image('txtIntro', 'assets/images/text/txt_intro.png');
+    }
+
+    create (data){
+        const gameHeight = game.config.height
+        const gameWidth = game.config.width
+
+        console.log("create",data)
+
+        // Render Background
+        let imageBG = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'backgroundFinal')
+        let scaleX = this.cameras.main.width / imageBG.width
+        let scaleY = this.cameras.main.height / imageBG.height
+        let scale = Math.max(scaleX, scaleY)
+        imageBG.setScale(scale).setScrollFactor(0)
+
+        // // Render Logo
+        // const logoTop = this.add.image(gameWidth/2, 100, 'logoTop').setInteractive();
+        // logoTop.setPosition(gameWidth/2, gameHeight/14 + 20);
+        // logoTop.setScale(0.4)
+
+        // // Render Text Intro
+        // const txtIntro = this.add.image(gameWidth/2, gameHeight/2, 'txtIntro').setInteractive();
+        // txtIntro.setPosition(gameWidth/2, gameHeight/1.3 + 10);
+        // window.innerWidth < 600 ? txtIntro.setScale(0.5) : txtIntro.setScale(1)
+
+
+        // // Render Button Start (354 × 117)
+        // const btnStart = this.add.image(gameWidth/2, 100, 'btnStart').setInteractive();
+        // btnStart.setDisplaySize(gameWidth*(2/5.5), gameWidth*(2/5.5)*(117/354))
+        // const btnStartY = gameHeight - gameWidth*(2/6)*(117/354)*(1/2) - 25
+        // btnStart.setPosition(gameWidth/2, btnStartY);
+
+        // // ------ event
+        // btnStart.on('pointerdown', function(){
+        //     this.scene.start("GameScene");
+        // }, this)
+    }
+}
+
+
 var config = {
     type: Phaser.AUTO,
     parent: 'wapper',
     width: window.innerWidth,
     height: window.innerWidth*1.3333,
     backgroundColor: '#4488aa',
-    scene: [ SceneA, SceneB]
+    scene: [ StartScene, GameScene, FinalScene]
 };
 
 var game = new Phaser.Game(config);
