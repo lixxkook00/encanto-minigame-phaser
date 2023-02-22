@@ -1,3 +1,5 @@
+import Footer from "../components/Footer.js";
+
 class StartScene extends Phaser.Scene {
     constructor ()
     {
@@ -102,30 +104,54 @@ class StartScene extends Phaser.Scene {
 
         // video frame
         this.load.image('videoFrame', 'assets/images/icons/videoframe.png');
+
+        // Footer
+        this.load.image('footerLogo', 'assets/images/logo/logo_pg.png');
+        this.load.image('footerText', 'assets/images/text/legal.png');
     }
 
     create (data){
         const gameHeight = this.game.config.height
         const gameWidth = this.game.config.width
 
-        // // Render Logo
+        // Render Logo
         const logoTop = this.add.image(gameWidth/2, 100, 'logoTop').setInteractive();
         logoTop.setPosition(gameWidth/2, gameHeight/14 + 20);
         logoTop.setScale(0.4)
 
-        // // Render Text Intro
+        // Render Text Intro
         const txtIntro = this.add.image(gameWidth/2, gameHeight/2, 'txtIntro').setInteractive();
         txtIntro.setPosition(gameWidth/2, gameHeight/1.3 + 10);
         window.innerWidth < 600 ? txtIntro.setScale(0.5) : txtIntro.setScale(1)
 
 
-        // // Render Button Start (354 × 117)
+        // Render Button Start (354 × 117)
         const btnStart = this.add.image(gameWidth/2, 100, 'btnStart').setInteractive();
         btnStart.setDisplaySize(gameWidth*(2/5.5), gameWidth*(2/5.5)*(117/354))
         const btnStartY = gameHeight - gameWidth*(2/6)*(117/354)*(1/2) - 25
         btnStart.setPosition(gameWidth/2, btnStartY);
 
-        // // ------ event
+        // // Render Logo Footer
+        // const footerLogo = this.add.image(10, gameHeight/2, 'footerLogo').setInteractive();
+        // if(window.innerWidth < 600){
+        //     footerLogo.setScale(0.5)
+        //     footerLogo.setPosition(20, gameHeight - 20);
+        // }else{
+        //    footerLogo.setPosition(40, gameHeight - 40);
+        // }
+
+        // // Render Text Footer
+        // const footerText = this.add.image(10, gameHeight/2, 'footerText').setInteractive();
+        // if(window.innerWidth < 600){
+        //     footerText.setScale(0.5)
+        //     footerText.setPosition(gameWidth - 20 - (footerText.width)*(1/2)*0.5, gameHeight - 20);
+        // }else{
+        //    footerText.setPosition(gameWidth - 40 - (footerText.width)*(1/2)*0.5, gameHeight - 40);
+        // }
+
+        Footer(this)
+
+        // ------ event
         btnStart.on('pointerdown', function(){
             this.scene.start("GameScene");
         }, this)

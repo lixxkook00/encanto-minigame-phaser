@@ -1,3 +1,5 @@
+import Footer from "../components/Footer.js";
+
 class GameScene extends Phaser.Scene {
 
     constructor ()
@@ -43,7 +45,7 @@ class GameScene extends Phaser.Scene {
         const gameWidth = this.game.config.width
 
 
-        var x = gameWidth/14;
+        var x = gameWidth/15;
         var y = gameHeight-50;
 
         const TARGET_ARRAY_INFOR = [
@@ -126,31 +128,39 @@ class GameScene extends Phaser.Scene {
         textTimer.x = Math.floor(spriteTimeBG.x + (spriteTimeBG.width/4)*0.6);
         textTimer.y = Math.floor(spriteTimeBG.y - (spriteTimeBG.height/2)*0.55);
 
-        // Render Background Character
+        // Render Background Character (768 × 186)
         const backgroundCharac = this.add.image(0, gameHeight-15, 'backgroundCharac').setInteractive();
-        backgroundCharac.setPosition((gameWidth-backgroundCharac.width/2.1)-10, gameHeight-backgroundCharac.height/6);
-        backgroundCharac.setScale(1)
+        backgroundCharac.setSize(gameWidth + 60,(gameWidth + 60)*(186/768))
 
+        if(window.innerWidth < 600){
+            backgroundCharac.setPosition((gameWidth/2), gameHeight - (gameWidth + 60)*(186/768)*(1/4));
+        }else{
+            backgroundCharac.setPosition((gameWidth/2), gameHeight - (gameWidth - 60)*(186/768)*(1/2));
+        }
+        
         // Render Logo
         const logoTop = this.add.image(100, 100, 'logoTop').setInteractive();
         logoTop.setPosition(gameWidth/4, gameHeight/14);
         logoTop.setScale(0.3)
-
 
         // Render character
         for (var i = 1; i <= NUMBER_CHARACTER; i++)
         {   
             // CREATE CHARACTER
             const characImageName = `character${i}`
-            var image = this.add.image(x, gameHeight-backgroundCharac.height/2.8, characImageName).setInteractive();
+            let characImageScaleUp = 1
+            
+            const image = this.add.image(x, 100 , characImageName).setInteractive();
             this.input.setDraggable(image);
 
             CHARAC_ARRAY.push(image)
 
             image.setSize(gameWidth/25, gameHeight/25);
-            if(window.innerWidth < 600){
-                image.setScale(0.5);
-            }
+            window.innerWidth < 600 ? characImageScaleUp = 0.5 : characImageScaleUp = 1
+
+            image.setScale(characImageScaleUp)
+            const characterY = window.innerWidth < 600 ? backgroundCharac.y - 10 - ((image.height/2)*characImageScaleUp) - 20 : backgroundCharac.y - 10
+            image.setPosition(x,characterY)
 
             x += this.game.config.width/9.5;
 
@@ -165,6 +175,8 @@ class GameScene extends Phaser.Scene {
             imageTarget.setSize(gameWidth/25, gameHeight/25);
             if(window.innerWidth < 600){
                 imageTarget.setScale(0.55);
+            }else{
+                imageTarget.setScale(1.05)
             }
 
             TARGET_ARRAY.push(imageTarget)
@@ -222,7 +234,9 @@ class GameScene extends Phaser.Scene {
             }, this)
         }
 
-        // events
+        Footer(this)
+
+        // events drag and drop
         this.input.on('dragstart', function (pointer, gameObject) {
             this.children.bringToTop(gameObject);
 

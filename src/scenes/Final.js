@@ -1,3 +1,5 @@
+import Footer from "../components/Footer.js";
+
 class FinalScene extends Phaser.Scene {
 
     constructor ()
@@ -113,7 +115,7 @@ class FinalScene extends Phaser.Scene {
             btnLearnMore.setPosition((gameWidth/2) + 5 + gameWidth*(2/12), btnLearnMoreY);
         }
 
-        
+        Footer(this)
     }
 }
 
