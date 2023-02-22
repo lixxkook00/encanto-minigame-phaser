@@ -1,4 +1,5 @@
 import Footer from "../components/Footer.js";
+import SoundControl from "../components/SoundControl.js";
 
 class FinalScene extends Phaser.Scene {
 
@@ -35,9 +36,20 @@ class FinalScene extends Phaser.Scene {
         if(data.score < 9){
             // Render Text End
             const txtEnd = this.add.image(gameWidth/2, gameHeight/2, 'txtEnd').setInteractive();
-            txtEnd.setPosition(gameWidth/2, gameHeight/2.7 + 10);
+            txtEnd.setPosition(gameWidth/2, gameHeight/2.7);
 
             gameWidth < 600 ? txtEnd.setScale(0.5) : txtEnd.setScale(1)
+
+            this.tweens.add({
+                targets: txtEnd,
+                alpha: {
+                    from: 0.5,
+                    to: 1
+                },
+                y: gameHeight/2.7 + 10,
+                duration: 300,
+                ease: 'Linear'
+            })
 
             // Render Game Result
             var style = { font: "bold 50px Arial", fill: "#6FFFFF", boundsAlignH: "center", boundsAlignV: "middle" };
@@ -113,6 +125,8 @@ class FinalScene extends Phaser.Scene {
             const btnLearnMoreY = gameHeight - gameWidth*(2/6)*(96/296)*(1/2) - 10
             btnLearnMore.setPosition((gameWidth/2) + 5 + gameWidth*(2/12), btnLearnMoreY);
         }
+
+        SoundControl(this)
 
         Footer(this)
     }

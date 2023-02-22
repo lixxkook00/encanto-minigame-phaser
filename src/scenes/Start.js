@@ -1,4 +1,5 @@
 import Footer from "../components/Footer.js";
+import SoundControl from "../components/SoundControl.js";
 
 class StartScene extends Phaser.Scene {
     constructor ()
@@ -97,6 +98,9 @@ class StartScene extends Phaser.Scene {
         this.load.image('btnLearnMore', 'assets/images/buttons/btn_learnmore.png');
         this.load.image('btnRePlay', 'assets/images/buttons/btn_replay.png');
 
+        this.load.image('soundIcon', 'assets/images/icons/sound_on.png');
+        this.load.image('soundIconMuted', 'assets/images/icons/sound_off.png');
+
         // texts
         this.load.image('txtEnd', 'assets/images/text/txt_endscreen_lose.png');
         this.load.image('txtCongratz', 'assets/images/text/txt_endscreen_win.png');
@@ -126,12 +130,42 @@ class StartScene extends Phaser.Scene {
         txtIntro.setPosition(gameWidth/2, gameHeight/1.3 + 10);
         gameWidth < 600 ? txtIntro.setScale(0.5) : txtIntro.setScale(1)
 
+        this.tweens.add(
+            {
+                targets: txtIntro,
+                alpha: {
+                    from: 0,
+                    to: 1
+                },
+                scale: {
+                    from: 1.5,
+                    to: gameWidth < 600 ? 0.5 : 1,
+                },
+                duration: 500,
+                ease: 'Linear'
+            }
+        );
+
 
         // Render Button Start (354 × 117)
         const btnStart = this.add.image(gameWidth/2, 100, 'btnStart').setInteractive();
         btnStart.setDisplaySize(gameWidth*(2/5.5), gameWidth*(2/5.5)*(117/354))
         const btnStartY = gameHeight - gameWidth*(2/6)*(117/354)*(1/2) - 25
         btnStart.setPosition(gameWidth/2, btnStartY);
+
+        this.tweens.add(
+            {
+                targets: btnStart,
+                scale: {
+                    from: 0.3,
+                    to: 0.55,
+                },
+                duration: 500,
+                ease: 'Linear'
+            }
+        );
+
+        SoundControl(this)
 
         Footer(this)
 

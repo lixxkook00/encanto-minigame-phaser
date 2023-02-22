@@ -1,4 +1,5 @@
 import Footer from "../components/Footer.js";
+import SoundControl from "../components/SoundControl.js";
 
 class GameScene extends Phaser.Scene {
 
@@ -132,16 +133,12 @@ class GameScene extends Phaser.Scene {
         let scale = Math.max(scaleX, scaleY)
         imageBG.setScale(scale).setScrollFactor(0)
 
-        // Render Time BG
-        spriteTimeBG = this.add.image(200, 200, 'timeBG');
-        spriteTimeBG.setPosition(gameWidth - (spriteTimeBG.width*0.8/2 + gameWidth/20), gameHeight/10);
-
-        if(gameWidth < 600){
-            spriteTimeBG.setScale(0.8)
-        }
+        // Render Time BG (244 × 84)
+        spriteTimeBG = this.add.image(160, 160, 'timeBG');
+        spriteTimeBG.setPosition(gameWidth - (spriteTimeBG.width*0.8/2 + gameWidth/20) - gameWidth/16, gameHeight/10);
 
         // Render Timecountdown
-        var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+        var style = { font: "bold 18px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
         textTimer = this.add.text(gameWidth/2, 32, this.initialTime,style);
 
         // Each 1000 ms call onEvent
@@ -163,8 +160,15 @@ class GameScene extends Phaser.Scene {
             }
         );
 
-        textTimer.x = Math.floor(spriteTimeBG.x + (spriteTimeBG.width/4)*0.6);
-        textTimer.y = Math.floor(spriteTimeBG.y - (spriteTimeBG.height/2)*0.55);
+        textTimer.x = Math.floor(spriteTimeBG.x + (spriteTimeBG.width/4)*0.6 - 20);
+        textTimer.y = Math.floor(spriteTimeBG.y - (spriteTimeBG.height/2)*0.5) + textTimer.height/4;
+
+        if(gameWidth < 600){
+            spriteTimeBG.setScale(0.6)
+        }else{
+            textTimer.setScale(2)
+            textTimer.y = Math.floor(spriteTimeBG.y - (spriteTimeBG.height/2)*0.5) - textTimer.height/3;
+        }
 
         // Render Background Character (768 × 186)
         const backgroundCharac = this.add.image(0, gameHeight-15, 'backgroundCharac').setInteractive();
@@ -177,16 +181,33 @@ class GameScene extends Phaser.Scene {
         }
 
         // Render Text Turtorial (621 × 33)
-            const txtTurtorial = this.add.image(gameWidth/2, 100, 'txtTurtorial').setInteractive();
-            txtTurtorial.setDisplaySize(gameWidth*0.9,gameWidth*0.9*(33/621))
-            let txtTurtorialY;
-            if(gameWidth < 600){
-                txtTurtorialY = backgroundCharac.y - backgroundCharac.height/1.5 - 8
-            }else{
-                txtTurtorialY = backgroundCharac.y - backgroundCharac.height/2
-            }
-            txtTurtorial.setPosition(gameWidth/2, txtTurtorialY);
-            
+        const txtTurtorial = this.add.image(gameWidth/2, 100, 'txtTurtorial').setInteractive();
+        txtTurtorial.setDisplaySize(gameWidth*0.9,gameWidth*0.9*(33/621))
+        let txtTurtorialY;
+        if(gameWidth < 600){
+            txtTurtorialY = backgroundCharac.y - backgroundCharac.height/1.5 - 8
+        }else{
+            txtTurtorialY = backgroundCharac.y - backgroundCharac.height/2
+        }
+        txtTurtorial.setPosition(gameWidth/2, txtTurtorialY+10);
+        txtTurtorial.setAlpha(0)
+        this.tweens.add(
+        {
+            targets: txtTurtorial,
+            delay: parseInt(`${i}00`),
+            alpha: {
+                from: 0,
+                to: 1
+            },
+            // scale: {
+            //     from: 1.5,
+            //     to: gameWidth < 600 ? 0.5 : 1,
+            // },
+            y: txtTurtorialY,
+            duration: 300,
+            ease: 'Linear'
+        }
+    );
         
         // Render Logo
         const logoTop = this.add.image(100, 100, 'logoTop').setInteractive();
@@ -210,7 +231,26 @@ class GameScene extends Phaser.Scene {
 
             image.setScale(characImageScaleUp)
             const characterY = gameWidth < 600 ? backgroundCharac.y - 10 - ((image.height/2)*characImageScaleUp) - 20 : backgroundCharac.y - 10
-            image.setPosition(x,characterY)
+            image.setPosition(x,characterY - 30)
+            image.setAlpha(0)
+
+            this.tweens.add(
+                {
+                    targets: image,
+                    delay: parseInt(`${i}00`),
+                    alpha: {
+                        from: 0,
+                        to: 1
+                    },
+                    // scale: {
+                    //     from: 1.5,
+                    //     to: gameWidth < 600 ? 0.5 : 1,
+                    // },
+                    y: characterY,
+                    duration: 300,
+                    ease: 'Linear'
+                }
+            );
 
             x += this.game.config.width/9.5;
 
@@ -292,6 +332,22 @@ class GameScene extends Phaser.Scene {
                 closeButton.destroy()
             }, this)
         }
+
+        // Sounds
+        // const SoundControl = (game) => {
+        //     // 41 × 59
+        //     const soundIcon = game.add.image(10, gameHeight/2, 'soundIcon').setInteractive();
+
+        //     if(gameWidth < 600){
+        //         soundIcon.setScale(0.7)
+        //         soundIcon.setPosition(gameWidth - 30, gameHeight/10 - 2);
+        //     }else{
+        //         soundIcon.setScale(0.9)
+        //         soundIcon.setPosition(gameWidth - (gameWidth/20), gameHeight/10 - 5);
+        //     }
+        // }
+
+        SoundControl(this)
         
         Footer(this)
 
