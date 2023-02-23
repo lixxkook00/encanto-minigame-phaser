@@ -86,7 +86,7 @@ class StartScene extends Phaser.Scene {
         // ------ event
         btnStart.on('pointerdown', function(){
             music.play()
-            this.scene.start("GameScene");
+            this.scene.start("FinalScene");
         }, this)
     }
 }

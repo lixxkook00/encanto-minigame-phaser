@@ -1,3 +1,9 @@
+<div class="video-container" style="position: absolute; transform: translate(-50%, -50%); transition: opacity 0.5s ease-out 0s; opacity: 1; visibility: visible; pointer-events: none; top: 551.609px; left: 307.875px; width: 420.121px; height: 236.318px;">
+   <video preload="metadata" playsinline="" webkit-playsinline="" src="static/video.mp4" style="width: 100%; height: auto;"></video>
+   <img src="images/btn_replay.svg" draggable="false" style="position: absolute; top: 50%; left: 50%; width: 25%; height: auto; transform: translate(-50%, -50%); visibility: hidden; cursor: pointer; pointer-events: auto;">
+   <img src="images/btn_sound_on.svg" draggable="false" style="position: absolute; top: 3%; right: 2%; width: 10%; max-width: 80px; height: auto; display: block; cursor: pointer; pointer-events: auto;">
+   <img src="images/btn_sound_off.svg" draggable="false" style="position: absolute; top: 3%; right: 2%; width: 10%; max-width: 80px; height: auto; display: none; cursor: pointer; pointer-events: auto;">
+</div>
 // // Render Popup
 // const showPopUp = (i,currentScene,dropZone) => {
 //     const popUp = this.add.image(gameWidth/2, gameHeight/2, `popup${i}`);

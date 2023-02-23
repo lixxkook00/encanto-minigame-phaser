@@ -1,5 +1,6 @@
 import Footer from "../components/Footer.js";
 import SoundControl from "../components/SoundControl.js";
+import handleVideoScale from "../utils/handleVideoFinal.js";
 
 class FinalScene extends Phaser.Scene {
 
@@ -125,6 +126,44 @@ class FinalScene extends Phaser.Scene {
             const btnLearnMoreY = gameHeight - gameWidth*(2/6)*(96/296)*(1/2) - 10
             btnLearnMore.setPosition((gameWidth/2) + 5 + gameWidth*(2/12), btnLearnMoreY);
         }
+
+        // Render Text End
+            const txtEnd = this.add.image(gameWidth/2, gameHeight/2, 'txtCongratz').setInteractive();
+            txtEnd.setPosition(gameWidth/2, gameHeight/2.7 + 20);
+
+            gameWidth < 600 ? txtEnd.setScale(0.5) : txtEnd.setScale(1)
+            const textTimerY = gameHeight/2.7 + (gameWidth < 600 ? (txtEnd.height/2)*0.5 : (txtEnd.height/2)*1) + 15
+
+            // Render Video Frame
+            const videoFrame = this.add.image(gameWidth/2, 100, 'videoFrame').setInteractive();
+            videoFrame.setDisplaySize(gameWidth*(2/3),gameWidth*(2/3)*(311/540))
+            const videoFrameY = textTimerY + (gameWidth < 600 ? videoFrame.height/4 : videoFrame.height/2)
+            videoFrame.setPosition(gameWidth/2, videoFrameY);
+
+            handleVideoScale(gameWidth*(2/3),gameWidth*(2/3)*(311/540),videoFrameY)
+
+            // Render Text Only (364 × 40)
+            const txtOnly = this.add.image(gameWidth/2, 100, 'txtOnly').setInteractive();
+            txtOnly.setDisplaySize(30*(364/40),30)
+            const txtOnlyY = textTimerY + (gameWidth < 600 ? txtOnly.height/4 : txtOnly.height/2)
+            txtOnly.setPosition(gameWidth/2, videoFrameY + 20 + gameWidth*(2/3)*(311/540)*(1/2));
+
+            // Render Button Replay (296 × 96)
+            const btnRePlay = this.add.image(gameWidth/2, 100, 'btnRePlay').setInteractive();
+            btnRePlay.setDisplaySize(gameWidth*(2/6), gameWidth*(2/6)*(96/296))
+            const btnRePlayY = gameHeight - gameWidth*(2/6)*(96/296)*(1/2) - 10
+            btnRePlay.setPosition((gameWidth/2) - 5 - gameWidth*(2/12), btnRePlayY);
+
+            // ------ event
+            btnRePlay.on('pointerdown', function(){
+                this.scene.start("GameScene");
+            }, this)
+
+            // Render Button Replay (296 × 96)
+            const btnLearnMore = this.add.image(gameWidth/2, 100, 'btnLearnMore').setInteractive();
+            btnLearnMore.setDisplaySize(gameWidth*(2/6), gameWidth*(2/6)*(96/296))
+            const btnLearnMoreY = gameHeight - gameWidth*(2/6)*(96/296)*(1/2) - 10
+            btnLearnMore.setPosition((gameWidth/2) + 5 + gameWidth*(2/12), btnLearnMoreY);
 
         SoundControl(this)
 

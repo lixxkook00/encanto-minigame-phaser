@@ -17,9 +17,16 @@ const handleScaleWindown = () => {
     }
 }
 
+window.addEventListener('DOMContentLoaded', (event) => {
+    const gameWrapper = document.querySelector('#gameWrapper')
+
+    gameWrapper.style.height = `${handleScaleWindown().height}px`
+    gameWrapper.style.width = `${handleScaleWindown().width}px`
+});
+
 var config = {
     type: Phaser.AUTO,
-    parent: 'wapper',
+    parent: 'gameWrapper',
     width: handleScaleWindown().width,
     height: handleScaleWindown().height,
     backgroundColor: '#000000',
