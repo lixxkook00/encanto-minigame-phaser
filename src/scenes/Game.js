@@ -176,10 +176,6 @@ class GameScene extends Phaser.Scene {
                         from: 0,
                         to: 1
                     },
-                    // scale: {
-                    //     from: 1.5,
-                    //     to: gameWidth < 600 ? 0.5 : 1,
-                    // },
                     y: characterY,
                     duration: 300,
                     ease: 'Linear'
@@ -191,16 +187,16 @@ class GameScene extends Phaser.Scene {
             // CREATE TARGET
             const characImageNameTarget = `character${i}New`
 
-            // console.log(TARGET_ARRAY_INFOR[i-1].x,TARGET_ARRAY_INFOR[i-1].y)
-
             var imageTarget = this.add.image(TARGET_ARRAY_INFOR[i-1].x, TARGET_ARRAY_INFOR[i-1].y, characImageNameTarget).setInteractive();
             imageTarget.tint = 0x000000;
             imageTarget.input.dropZone = true;
             imageTarget.setSize(gameWidth/25, gameHeight/25);
             if(gameWidth < 600){
                 imageTarget.setScale(0.55);
-            }else{
+            }else if( 600 < gameWidth < 900){
                 imageTarget.setScale(1.05)
+            }else{
+                imageTarget.setScale(0.6)
             }
 
             TARGET_ARRAY.push(imageTarget)
